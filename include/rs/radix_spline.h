@@ -28,6 +28,10 @@ class RadixSpline {
         max_error_(max_error),
         radix_table_(std::move(radix_table)),
         spline_points_(std::move(spline_points)) {}
+      
+  int GetSplinePointsVecSize() {
+    return spline_points_.size();
+  }
 
   // Returns the estimated position of `key`.
   double GetEstimatedPosition(const KeyType key) const {
@@ -43,7 +47,7 @@ class RadixSpline {
     // Compute slope.
     const double x_diff = up.x - down.x;
     const double y_diff = up.y - down.y;
-    const double slope = y_diff / x_diff;
+    const double slope = y_diff / x_diff; // 斜率
 
     // Interpolate.
     const double key_diff = key - down.x;

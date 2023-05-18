@@ -5,10 +5,11 @@
 using namespace std;
 
 void RadixSplineExample() {
+  int findkey = 99999;
   // Create random keys.
-  vector<uint64_t> keys(1e6);
+  vector<uint64_t> keys(1e4);
   generate(keys.begin(), keys.end(), rand);
-  keys.push_back(8128);
+  keys.push_back(findkey-1);
   sort(keys.begin(), keys.end());
 
   // Build RadixSpline.
@@ -19,12 +20,16 @@ void RadixSplineExample() {
   rs::RadixSpline<uint64_t> rs = rsb.Finalize();
 
   // Search using RadixSpline.
-  rs::SearchBound bound = rs.GetSearchBound(8128);
+  rs::SearchBound bound = rs.GetSearchBound(findkey);
   cout << "The search key is in the range: [" << bound.begin << ", "
        << bound.end << ")" << endl;
   auto start = begin(keys) + bound.begin, last = begin(keys) + bound.end;
-  cout << "The key is at position: "
-       << std::lower_bound(start, last, 8128) - begin(keys) << endl;
+  // std::lower_bound() 区间内第一个大于等于value的值的位置，没找到就返回end()
+  int pos = std::lower_bound(start, last, findkey) - begin(keys);
+  cout << "The key is at position: " << pos << endl;
+  cout << "CHECK " << keys[pos] << endl;
+  cout << "The number of elems: " << keys.size() << endl;
+  cout << "The number of points: " << rs.GetSplinePointsVecSize() << endl;
 }
 
 void MultiMapExample() {

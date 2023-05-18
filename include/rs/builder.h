@@ -96,7 +96,8 @@ class Builder {
 
   static Orientation ComputeOrientation(const double dx1, const double dy1,
                                         const double dx2, const double dy2) {
-    const double expr = std::fma(dy1, dx2, -std::fma(dy2, dx1, 0));
+    // std::fma(a, b, c) --> a*b+c
+    const double expr = std::fma(dy1, dx2, -std::fma(dy2, dx1, 0)); // dy1*dx2-dy2*dx1
     if (expr > precision)
       return Orientation::CW;
     else if (expr < -precision)
@@ -218,16 +219,16 @@ class Builder {
   const KeyType min_key_;
   const KeyType max_key_;
   const size_t num_radix_bits_;
-  const size_t num_shift_bits_;
+  const size_t num_shift_bits_; // 共同前缀位数
   const size_t max_error_;
 
   std::vector<uint32_t> radix_table_;
   std::vector<Coord<KeyType>> spline_points_;
 
   size_t curr_num_keys_;
-  size_t curr_num_distinct_keys_;
-  KeyType prev_key_;
-  size_t prev_position_;
+  size_t curr_num_distinct_keys_; // 不同key的数量
+  KeyType prev_key_; // 前一个key
+  size_t prev_position_; // 前一个key的偏移量
   KeyType prev_prefix_;
 
   // Current upper and lower limits on the error corridor of the spline.
@@ -235,7 +236,7 @@ class Builder {
   Coord<KeyType> lower_limit_;
 
   // Previous CDF point.
-  Coord<KeyType> prev_point_;
+  Coord<KeyType> prev_point_; // 前一个点，加入的候选点
 };
 
 }  // namespace rs
